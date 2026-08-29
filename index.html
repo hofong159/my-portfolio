@@ -111,13 +111,18 @@
         .gallery-tag { font-size: 0.85rem; color: var(--text-sub); font-family: 'Courier New', monospace; display: inline-block; background: rgba(0,0,0,0.3); padding: 3px 10px; margin-top: 5px; border-radius: 4px; }
 
         .gallery-item.portfolio-card { cursor: pointer; }
-        #portfolio-detail { display:none; position:fixed; z-index:9998; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); justify-content:center; align-items:center; padding:30px; opacity:0; transition:opacity 0.3s; }
+        #portfolio-detail { display:none; position:fixed; z-index:9998; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); justify-content:center; align-items:center; padding:18px; opacity:0; transition:opacity 0.3s; }
         #portfolio-detail.show { opacity:1; }
-        .portfolio-detail-box { width:min(800px,92vw); max-height:85vh; overflow:auto; background:var(--bg-card); border:var(--border-tech); border-radius:12px; padding:40px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+        .portfolio-detail-box { width:min(1000px,96vw); max-height:94vh; overflow:auto; background:var(--bg-card); border:var(--border-tech); border-radius:12px; padding:38px 40px 42px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
         .portfolio-detail-title { font-family:'Orbitron',sans-serif; font-size:1.8rem; color:var(--text-main); margin-bottom:20px; padding-right:40px; }
-        .portfolio-detail-description { color:var(--text-sub); font-size:1.1rem; line-height:1.9; white-space:pre-wrap; }
-        #close-portfolio-detail { position:absolute; top:15px; right:25px; color:var(--text-main); font-size:35px; cursor:pointer; transition:0.3s; }
-        #close-portfolio-detail:hover { color:var(--accent-color); }        .gallery-description { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); color: var(--text-sub); font-size: 1rem; line-height: 1.7; white-space: pre-wrap; }
+        .portfolio-detail-media { width:100%; margin-bottom:20px; }
+        .portfolio-detail-media .carousel-container { height:min(62vh,560px); border-radius:8px; background:#000; }
+        .portfolio-detail-media .gallery-img { cursor:pointer; }
+        .portfolio-detail-media iframe { display:block; width:100%; height:100%; }
+        .portfolio-detail-description { color:var(--text-sub); font-size:1.1rem; line-height:1.9; white-space:pre-wrap; border-top:1px solid rgba(0,0,0,0.08); padding-top:20px; }
+        #close-portfolio-detail { position:absolute; top:15px; right:25px; color:var(--text-main); font-size:35px; cursor:pointer; transition:0.3s; z-index:50; }
+        #close-portfolio-detail:hover { color:var(--accent-color); }
+        .gallery-description { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); color: var(--text-sub); font-size: 1rem; line-height: 1.7; white-space: pre-wrap; }
 
         .contact-content { background: var(--bg-card); border: var(--border-tech); padding: 60px; max-width: 700px; margin: 0 auto; text-align: center; position: relative; backdrop-filter: blur(10px); border-radius: 16px; }
         .contact-row { margin: 30px 0; font-size: 1.3rem; }
@@ -320,6 +325,7 @@ int main(int argc, char** argv){
         <div class="portfolio-detail-box">
             <span id="close-portfolio-detail" onclick="closePortfolioDetail()">&times;</span>
             <div id="portfolio-detail-title" class="portfolio-detail-title"></div>
+            <div id="portfolio-detail-media" class="portfolio-detail-media"></div>
             <div id="portfolio-detail-description" class="portfolio-detail-description"></div>
         </div>
     </div>
@@ -441,19 +447,36 @@ int main(int argc, char** argv){
             }
         }
 
-        // --- 10. 作品說明 ---
+        // --- 10. 作品詳細視窗（作品與說明同一個懸浮視窗） ---
         function openPortfolioDetail(card) {
-            const description = card.getAttribute('data-description') || '';
-            if (!description.trim()) return;
-            document.getElementById('portfolio-detail-title').textContent = isEnglish ? (card.getAttribute('data-title-en') || card.getAttribute('data-title')) : card.getAttribute('data-title');
-            document.getElementById('portfolio-detail-description').textContent = isEnglish ? (card.getAttribute('data-description-en') || description) : description;
+            const title = isEnglish ? (card.getAttribute('data-title-en') || card.getAttribute('data-title')) : card.getAttribute('data-title');
+            const description = isEnglish ? (card.getAttribute('data-description-en') || card.getAttribute('data-description') || '') : (card.getAttribute('data-description') || '');
+
+            document.getElementById('portfolio-detail-title').textContent = title || '';
+            document.getElementById('portfolio-detail-description').textContent = description;
+
+            // 把原作品的圖片／PDF放進同一個詳細視窗，不另外開只有文字的視窗。
+            const mediaTarget = document.getElementById('portfolio-detail-media');
+            mediaTarget.innerHTML = '';
+            const originalMedia = card.querySelector('.carousel-container');
+            if (originalMedia) {
+                const mediaClone = originalMedia.cloneNode(true);
+                mediaClone.querySelectorAll('.gallery-img').forEach(img => {
+                    // 詳細視窗內直接觀看，不再從這裡另外跳第二個 Lightbox。
+                    img.removeAttribute('onclick');
+                });
+                mediaTarget.appendChild(mediaClone);
+            }
+
             const detail = document.getElementById('portfolio-detail');
             detail.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
             setTimeout(() => detail.classList.add('show'), 10);
         }
         function closePortfolioDetail() {
             const detail = document.getElementById('portfolio-detail');
             detail.classList.remove('show');
+            document.body.style.overflow = '';
             setTimeout(() => { detail.style.display = 'none'; }, 300);
         }
         document.getElementById('portfolio-detail').addEventListener('click', (e) => {
@@ -544,10 +567,10 @@ int main(int argc, char** argv){
         function galleryCardHTML(it) {
             let mediaHtml = "";
             if (it.pdf) {
-                mediaHtml = `<div class="carousel-container" style="pointer-events:auto;"><iframe src="${esc(it.pdf)}#view=FitH&toolbar=0&navpanes=0" width="100%" height="100%" style="border:none;"></iframe></div>`;
+                mediaHtml = `<div class="carousel-container" style="pointer-events:none;"><iframe src="${esc(it.pdf)}#view=FitH&toolbar=0&navpanes=0" width="100%" height="100%" style="border:none;"></iframe></div>`;
             } else {
                 const imgs = (it.images && it.images.length ? it.images : []);
-                const imgsHtml = imgs.map((src, i) => `<img src="${esc(src)}" class="gallery-img${i === 0 ? ' active' : ''}" onclick="event.stopPropagation(); openLightboxGroup(this)">`).join("");
+                const imgsHtml = imgs.map((src, i) => `<img src="${esc(src)}" class="gallery-img${i === 0 ? ' active' : ''}" onclick="${it.certStyle ? 'event.stopPropagation(); openLightboxGroup(this)' : 'event.stopPropagation(); openPortfolioDetail(this.closest(\'.gallery-item\'))'}">`).join("");
                 const navHtml = imgs.length > 1 ? `
                     <button class="card-btn prev-card" onclick="moveSlide(this, -1)">&#10094;</button>
                     <button class="card-btn next-card" onclick="moveSlide(this, 1)">&#10095;</button>
@@ -561,8 +584,9 @@ int main(int argc, char** argv){
             const tagHtml = it.tag_zh ? `<div class="gallery-tag"${tagStyle} data-zh="${esc(it.tag_zh)}" data-en="${esc(it.tag_en || it.tag_zh)}">${esc(it.tag_zh)}</div>` : "";
             const linkHtml = it.link && !it.pdf ? `<a href="${esc(it.link)}" target="_blank" class="tech-btn hover-trigger" onclick="event.stopPropagation()" style="display:inline-block;margin-top:10px;text-decoration:none;" data-zh="${esc(it.link_label_zh || '造訪網站')}" data-en="${esc(it.link_label_en || 'Visit')}">${esc(it.link_label_zh || '造訪網站')}</a>` : "";
             const pdfLinkHtml = it.pdf ? `<a href="${esc(it.pdf)}#toolbar=0" target="_blank" class="tech-btn hover-trigger" onclick="event.stopPropagation()" style="display:inline-block;margin-top:10px;text-decoration:none;" data-zh="${esc(it.link_label_zh || '新分頁放大觀看')}" data-en="${esc(it.link_label_en || 'Open in new tab')}">${esc(it.link_label_zh || '新分頁放大觀看')}</a>` : "";
+            const portfolioAttrs = !it.certStyle ? ` onclick="openPortfolioDetail(this)" data-title="${esc(it.title_zh)}" data-title-en="${esc(it.title_en || it.title_zh)}" data-description="${esc(it.description_zh || '')}" data-description-en="${esc(it.description_en || it.description_zh || '')}"` : '';
             return `
-                <div class="gallery-item reveal hover-trigger${!it.certStyle ? ' portfolio-card' : ''}"${!it.certStyle ? ' onclick="openPortfolioDetail(this)" data-title="' + esc(it.title_zh) + '" data-title-en="' + esc(it.title_en || it.title_zh) + '" data-description="' + esc(it.description_zh || '') + '" data-description-en="' + esc(it.description_en || it.description_zh || '') + '"' : ''}${it.pdf ? ' oncontextmenu="return false;"' : ''}>
+                <div class="gallery-item reveal hover-trigger${!it.certStyle ? ' portfolio-card' : ''}"${portfolioAttrs}${it.pdf ? ' oncontextmenu="return false;"' : ''}>
                     ${mediaHtml}
                     <div class="gallery-info">
                         <div class="gallery-title" data-zh="${esc(it.title_zh)}" data-en="${esc(it.title_en || it.title_zh)}">${esc(it.title_zh)}</div>
