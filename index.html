@@ -109,6 +109,7 @@
         .gallery-info { padding: 25px; border-top: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 20; }
         .gallery-title { font-size: 1.3rem; color: var(--text-main); margin-bottom: 5px; font-family: 'Rajdhani', sans-serif; font-weight: 700; }
         .gallery-tag { font-size: 0.85rem; color: var(--text-sub); font-family: 'Courier New', monospace; display: inline-block; background: rgba(0,0,0,0.3); padding: 3px 10px; margin-top: 5px; border-radius: 4px; }
+        .gallery-description { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); color: var(--text-sub); font-size: 1rem; line-height: 1.7; white-space: pre-wrap; }
 
         .contact-content { background: var(--bg-card); border: var(--border-tech); padding: 60px; max-width: 700px; margin: 0 auto; text-align: center; position: relative; backdrop-filter: blur(10px); border-radius: 16px; }
         .contact-row { margin: 30px 0; font-size: 1.3rem; }
@@ -520,6 +521,7 @@ int main(int argc, char** argv){
                 mediaHtml = `<div class="carousel-container">${imgsHtml}${navHtml}</div>`;
             }
             const noteHtml = it.note_zh ? `<div style="font-size:0.85rem;color:var(--text-sub);margin-top:5px;">${esc(it.note_zh)}</div>` : "";
+            const descriptionHtml = it.description_zh ? `<div class="gallery-description" data-zh="${esc(it.description_zh)}" data-en="${esc(it.description_en || it.description_zh)}">${esc(it.description_zh)}</div>` : "";
             const tagStyle = it.certStyle ? ` style="background: rgba(0,0,0,0); border: 1px solid var(--accent-color); color: var(--accent-color);"` : "";
             const tagHtml = it.tag_zh ? `<div class="gallery-tag"${tagStyle} data-zh="${esc(it.tag_zh)}" data-en="${esc(it.tag_en || it.tag_zh)}">${esc(it.tag_zh)}</div>` : "";
             const linkHtml = it.link && !it.pdf ? `<a href="${esc(it.link)}" target="_blank" class="tech-btn hover-trigger" style="display:inline-block;margin-top:10px;text-decoration:none;" data-zh="${esc(it.link_label_zh || '造訪網站')}" data-en="${esc(it.link_label_en || 'Visit')}">${esc(it.link_label_zh || '造訪網站')}</a>` : "";
@@ -530,6 +532,7 @@ int main(int argc, char** argv){
                     <div class="gallery-info">
                         <div class="gallery-title" data-zh="${esc(it.title_zh)}" data-en="${esc(it.title_en || it.title_zh)}">${esc(it.title_zh)}</div>
                         ${noteHtml}
+                        ${descriptionHtml}
                         ${tagHtml}
                         ${linkHtml}
                         ${pdfLinkHtml}

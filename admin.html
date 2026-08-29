@@ -139,6 +139,7 @@
                 <div><label>標題(英，可留空)</label><input id="pf-title-en"></div>
                 <div><label>標籤(可留空，例如「建築設計作品」)</label><input id="pf-tag-zh"></div>
                 <div><label>備註小字(可留空)</label><input id="pf-note-zh"></div>
+                <div class="full"><label>作品說明(可留空)</label><textarea id="pf-description-zh" rows="5" placeholder="在這裡輸入這項作品的作品說明、設計理念、概念等文字..."></textarea></div>
                 <div><label>外部連結網址(可留空，例如作品網站)</label><input id="pf-link" placeholder="https://..."></div>
                 <div><label>連結顯示文字(可留空)</label><input id="pf-link-label"></div>
             </div>
@@ -331,7 +332,7 @@
         document.getElementById('pf-form-title').textContent = '新增作品';
         document.getElementById('pf-type').value = 'image';
         togglePfType();
-        ['pf-title-zh','pf-title-en','pf-tag-zh','pf-note-zh','pf-link','pf-link-label','pf-images','pf-pdf'].forEach(id => document.getElementById(id).value = '');
+        ['pf-title-zh','pf-title-en','pf-tag-zh','pf-note-zh','pf-description-zh','pf-link','pf-link-label','pf-images','pf-pdf'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('pf-order').value = 0;
         document.getElementById('pf-status').textContent = '';
     }
@@ -348,6 +349,7 @@
             title_en: document.getElementById('pf-title-en').value.trim(),
             tag_zh: document.getElementById('pf-tag-zh').value.trim(),
             note_zh: document.getElementById('pf-note-zh').value.trim(),
+            description_zh: document.getElementById('pf-description-zh').value.trim(),
             link: document.getElementById('pf-link').value.trim(),
             link_label_zh: document.getElementById('pf-link-label').value.trim(),
             images: isPdf ? [] : document.getElementById('pf-images').value.split(',').map(s => s.trim()).filter(Boolean),
