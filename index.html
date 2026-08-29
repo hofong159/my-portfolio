@@ -556,7 +556,7 @@ int main(int argc, char** argv){
                 mediaHtml = `<div class="carousel-container">${imgsHtml}${navHtml}</div>`;
             }
             const noteHtml = it.note_zh ? `<div style="font-size:0.85rem;color:var(--text-sub);margin-top:5px;">${esc(it.note_zh)}</div>` : "";
-            const descriptionHtml = it.description_zh ? `<div class="gallery-description" data-zh="${esc(it.description_zh)}" data-en="${esc(it.description_en || it.description_zh)}">${esc(it.description_zh)}</div>` : "";
+            const descriptionHtml = "";
             const tagStyle = it.certStyle ? ` style="background: rgba(0,0,0,0); border: 1px solid var(--accent-color); color: var(--accent-color);"` : "";
             const tagHtml = it.tag_zh ? `<div class="gallery-tag"${tagStyle} data-zh="${esc(it.tag_zh)}" data-en="${esc(it.tag_en || it.tag_zh)}">${esc(it.tag_zh)}</div>` : "";
             const linkHtml = it.link && !it.pdf ? `<a href="${esc(it.link)}" target="_blank" class="tech-btn hover-trigger" onclick="event.stopPropagation()" style="display:inline-block;margin-top:10px;text-decoration:none;" data-zh="${esc(it.link_label_zh || '造訪網站')}" data-en="${esc(it.link_label_en || 'Visit')}">${esc(it.link_label_zh || '造訪網站')}</a>` : "";
