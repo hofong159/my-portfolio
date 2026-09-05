@@ -106,547 +106,389 @@
         .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.3s; }
         .dot.active { background: var(--accent-color); transform: scale(1.3); }
 
-        .gallery-info { padding: 25px; border-top: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 20; }
-        .gallery-title { font-size: 1.3rem; color: var(--text-main); margin-bottom: 5px; font-family: 'Rajdhani', sans-serif; font-weight: 700; }
-        .gallery-tag { font-size: 0.85rem; color: var(--text-sub); font-family: 'Courier New', monospace; display: inline-block; background: rgba(0,0,0,0.3); padding: 3px 10px; margin-top: 5px; border-radius: 4px; }
+        .gallery-info { padding: 20px; }
+        .gallery-title { font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+        .gallery-tag { display: inline-block; font-size: 0.75rem; color: var(--accent-color); border: 1px solid var(--accent-color); padding: 4px 10px; border-radius: 4px; margin-top: 8px; }
 
-        .gallery-item.portfolio-card { cursor: pointer; }
-        #portfolio-detail { display:none; position:fixed; z-index:9998; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); justify-content:center; align-items:center; padding:18px; opacity:0; transition:opacity 0.3s; }
-        #portfolio-detail.show { opacity:1; }
-        .portfolio-detail-box { width:min(1000px,96vw); max-height:94vh; overflow:auto; background:var(--bg-card); border:var(--border-tech); border-radius:12px; padding:38px 40px 42px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
-        .portfolio-detail-title { font-family:'Orbitron',sans-serif; font-size:1.8rem; color:var(--text-main); margin-bottom:20px; padding-right:40px; }
-        .portfolio-detail-media { width:100%; margin-bottom:20px; }
-        .portfolio-detail-media .carousel-container { height:min(62vh,560px); border-radius:8px; background:#000; }
-        .portfolio-detail-media .gallery-img { cursor:pointer; }
-        .portfolio-detail-media .card-btn { opacity:1; cursor:pointer; }
-        .portfolio-detail-media .card-btn:hover { background:var(--accent-color); }
-        .portfolio-detail-media iframe { display:block; width:100%; height:100%; }
-        .portfolio-detail-description { color:var(--text-sub); font-size:1.1rem; line-height:1.9; white-space:pre-wrap; border-top:1px solid rgba(0,0,0,0.08); padding-top:20px; }
-        #close-portfolio-detail { position:absolute; top:15px; right:25px; color:var(--text-main); font-size:35px; cursor:pointer; transition:0.3s; z-index:50; }
-        #close-portfolio-detail:hover { color:var(--accent-color); }
-        .gallery-description { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); color: var(--text-sub); font-size: 1rem; line-height: 1.7; white-space: pre-wrap; }
+        #lightbox { display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); opacity: 0; transition: 0.3s; }
+        #lightbox.show { display: flex; align-items: center; justify-content: center; opacity: 1; }
+        #lightbox img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 8px; box-shadow: 0 0 50px rgba(230,126,34,0.5); }
+        .lightbox-nav { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; padding: 0 30px; }
+        .lightbox-btn { background: rgba(0,0,0,0.6); color: #fff; border: none; font-size: 2rem; cursor: none; padding: 10px 20px; border-radius: 50%; transition: 0.3s; z-index: 100000; }
+        .lightbox-btn:hover { background: var(--accent-color); }
+        .lightbox-close { position: absolute; top: 30px; right: 30px; background: rgba(0,0,0,0.6); color: #fff; border: none; font-size: 1.8rem; cursor: none; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; z-index: 100000; }
+        .lightbox-close:hover { background: var(--accent-color); }
 
-        .contact-content { background: var(--bg-card); border: var(--border-tech); padding: 60px; max-width: 700px; margin: 0 auto; text-align: center; position: relative; backdrop-filter: blur(10px); border-radius: 16px; }
-        .contact-row { margin: 30px 0; font-size: 1.3rem; }
-        .email-copy { cursor: none; color: var(--accent-color); font-weight: bold; border-bottom: 1px dashed var(--accent-color); position: relative; transition: 0.3s; font-family: 'Orbitron', sans-serif; }
-        .email-copy:hover { color: #fff; border-bottom: 1px solid #fff; }
-        .tooltip { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: var(--accent-color); color: #fff; padding: 5px 12px; font-size: 0.9rem; opacity: 0; transition: 0.3s; pointer-events: none; border-radius: 4px; }
-        .tooltip.show { opacity: 1; top: -55px; }
+        .portfolio-detail { display: none; position: fixed; z-index: 99998; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); opacity: 0; transition: 0.3s; align-items: center; justify-content: center; }
+        .portfolio-detail.show { display: flex; opacity: 1; }
+        .portfolio-modal { background: var(--bg-card); border: var(--border-tech); border-radius: 12px; padding: 40px; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; }
+        .portfolio-modal h2 { font-size: 2rem; margin-bottom: 20px; text-align: left; }
+        .portfolio-modal h2::after { display: none; }
+        .portfolio-modal p { color: var(--text-sub); line-height: 1.8; margin-bottom: 20px; }
+        .modal-close { position: absolute; top: 20px; right: 20px; background: transparent; color: var(--accent-color); border: 1px solid var(--accent-color); font-size: 1.5rem; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: none; transition: 0.3s; }
+        .modal-close:hover { background: var(--accent-color); color: #fff; }
 
-        .ig-btn { display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; font-size: 32px; text-decoration: none; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: none; }
-        .ig-btn:hover { transform: scale(1.1) translateY(-3px); box-shadow: 0 10px 25px rgba(225, 48, 108, 0.5); color: white; }
-
-        footer { margin-top: 150px; padding: 100px 20px; text-align: center; position: relative; border-top: 1px solid rgba(255,255,255,0.05); background-image: url('藍圖.jpg'); background-size: cover; background-position: center; }
-        .footer-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 28, 32, 0.9); }
-        .footer-content { position: relative; z-index: 2; }
-        .draft-text { font-family: 'Orbitron', sans-serif; color: var(--text-sub); letter-spacing: 2px; display: inline-block; padding: 10px 20px; border: 1px dashed var(--text-sub); margin-bottom: 20px; }
-
-        .personal-logo { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; z-index: 999; opacity: 0.7; transition: 0.3s; }
-        .personal-logo:hover { opacity: 1; transform: scale(1.1); }
-        .personal-logo img { width: 100%; height: 100%; object-fit: contain; }
-
-        #lightbox { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); justify-content: center; align-items: center; opacity: 0; transition: 0.3s; }
-        #lightbox.show { opacity: 1; }
-        #lightbox-img { max-width: 90%; max-height: 85vh; border-radius: 4px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-        #close-lightbox { position: absolute; top: 30px; right: 40px; color: #fff; font-size: 40px; cursor: none; }
-        .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: transparent; color: #fff; border: none; font-size: 30px; cursor: none; padding: 20px; transition: 0.3s; }
-        .lightbox-nav:hover { color: var(--accent-color); }
-        .lightbox-prev { left: 20px; } .lightbox-next { right: 20px; }
-
-        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .reveal.in-view { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 768px) {
-            .hero-section { align-items: flex-start; padding-top: 120px; }
             .profile-container { flex-direction: column; padding: 40px 20px; }
-            nav { padding: 1rem; }
-            nav ul { display: none; }
+            .profile-img { width: 180px; height: 180px; }
+            .profile-text h1 { font-size: 2.2rem; }
+            section { padding: 60px 15px; }
+            h2 { font-size: 2rem; margin-bottom: 50px; }
+            .gallery { grid-template-columns: 1fr; }
+            nav ul { gap: 15px; font-size: 0.9rem; }
         }
+
+        .lang-toggle { background: transparent; border: 1px solid var(--text-sub); color: var(--text-main); padding: 5px 12px; cursor: none; transition: 0.3s; border-radius: 4px; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; margin-left: 10px; }
+        .lang-toggle:hover { border-color: var(--accent-color); color: var(--accent-color); }
     </style>
 </head>
 <body>
 
-    <div id="code-bg">
-// stock_predict.cpp
-// 簡介：從 CSV 讀取歷史股價，產生簡單技術指標特徵，以線性回歸訓練，預測隔日收盤價
-#include &lt;bits/stdc++.h&gt;
-using namespace std;
+<div id="code-bg">
+0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 0 0 1
+</div>
+<div class="spotlight" id="spotlight"></div>
+<div id="cursor"></div>
 
-struct Row { string date; double close; };
+<nav>
+    <div class="logo"><span>HOFONG</span></div>
+    <ul>
+        <li><a href="#experience" class="hover-trigger" data-zh="經歷" data-en="Experience">經歷</a></li>
+        <li><a href="#portfolio" class="hover-trigger" data-zh="作品集" data-en="Portfolio">作品集</a></li>
+        <li><a href="#certifications" class="hover-trigger" data-zh="證照" data-en="Certificates">證照</a></li>
+        <li><a href="#contact" class="hover-trigger" data-zh="聯繫" data-en="Contact">聯繫</a></li>
+        <li><button class="lang-toggle" onclick="toggleLanguage()">EN / 中</button></li>
+    </ul>
+</nav>
 
-static vector&lt;double&gt; SMA(const vector&lt;double&gt;& v, int w){
-    vector&lt;double&gt; out(v.size(), NAN);
-    double sum=0;
-    for(int i=0;i&lt;v.size();++i){
-        sum+=v[i];
-        if(i>=w) sum-=v[i-w];
-        if(i>=w-1) out[i]=sum/w;
-    }
-    return out;
-}
-
-static vector&lt;double&gt; EMA(const vector&lt;double&gt;& v, int w){
-    double k = 2.0/(w+1.0);
-    double ema = v[0];
-    vector&lt;double&gt; out(v.size());
-    for(size_t i=1;i&lt;v.size();++i){
-        ema = k*v[i] + (1.0-k)*ema;
-        out[i]=ema;
-    }
-    return out;
-}
-
-// 求解 (X^T X + lambda*I) w = X^T y
-static vector&lt;double&gt; solve_ridge(const vector&lt;vector&lt;double&gt;&gt;& X, const vector&lt;double&gt;& y, double lambda){
-    int n=X.size(); int d=X[0].size();
-    vector&lt;vector&lt;double&gt;&gt; A(d, vector&lt;double&gt;(d,0.0));
-    vector&lt;double&gt; b(d,0.0);
-    // ... Matrix Operations ...
-    return w;
-}
-
-int main(int argc, char** argv){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
-    vector&lt;Row&gt; rows;
-    // ... Data Processing ...
-    auto sma5 = SMA(close,5);
-    auto ema10= EMA(close,10);
-    // ... Linear Regression Model ...
-    cout &lt;&lt; "Model Trained." &lt;&lt; endl;
-    return 0;
-}
-    </div>
-
-    <div class="spotlight"></div>
-
-    <div id="cursor"></div>
-
-    <nav>
-        <div class="logo">LIAO <span>HOFONG</span></div>
-        <ul id="nav-links">
-            <li><a href="#about" data-zh="關於" data-en="About" class="hover-trigger">關於</a></li>
-            <li><a href="#experience" data-zh="經歷" data-en="Experience" class="hover-trigger">經歷</a></li>
-            <li><a href="#portfolio" data-zh="作品" data-en="Portfolio" class="hover-trigger">作品</a></li>
-            <li><a href="#certs" data-zh="證照" data-en="Certificates" class="hover-trigger">證照</a></li>
-            <li><a href="#contact" data-zh="聯絡" data-en="Contact" class="hover-trigger">聯絡</a></li>
-        </ul>
-        <div class="nav-controls">
-            <button class="tech-btn hover-trigger" onclick="toggleLang()">EN / 中</button>
-            <button class="tech-btn hover-trigger" onclick="toggleTheme()"><i class="fas fa-adjust"></i></button>
-        </div>
-    </nav>
-
-    <header id="about" class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="profile-container reveal">
-            <div class="profile-img-wrapper">
-                <img src="個人照.jpg" alt="Profile" class="profile-img hover-trigger" onclick="blackHoleTrigger()">
-            </div>
-            
-            <div class="profile-text">
-                <div class="typewriter" id="typewriter"></div>
-                <h1>廖和風</h1>
-                <p class="school" data-zh="目前就讀：正修科技大學 五專部建築科" data-en="Cheng Shiu University, Dept. of Architecture">目前就讀：正修科技大學 五專部建築科</p>
-                
-                <p class="profile-bio" data-zh="從小開始學木工，從木工作品開始踏入設計，將生活經驗放入設計中，也嘗試將科技與生活結合。" data-en="Started woodworking from a young age, stepping into design through wood crafts. Integrating life experiences into design, while attempting to combine technology with daily life.">
-                    從小開始學木工，從木工作品開始踏入設計，將生活經驗放入設計中，也嘗試將科技與生活結合。
-                </p>
-
-                <div class="skill-container">
-                    <div class="skill-item">
-                        <div class="skill-info"><span>AutoCAD</span><span>50%</span></div>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 50%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>SketchUp</span><span>50%</span></div>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 50%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Illustrator</span><span>60%</span></div>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 60%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>C++ Programming</span><span>40%</span></div>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 40%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Office 360</span><span>70%</span></div>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 70%"></div></div>
-                    </div>
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="profile-container">
+        <img src="profile.jpg" alt="Profile" class="profile-img hover-trigger">
+        <div class="profile-text">
+            <h1>廖<br>和<br>風</h1>
+            <div class="typewriter" id="typewriter-text">Digital Architect</div>
+            <p class="profile-bio" data-zh="建築五專學生，透過數位設計與實體創作，探索空間與科技的交融。擅長使用建築設計軟體和前端開發技術，致力於將創意思想轉化為具體成果。" data-en="Architecture student exploring the intersection of digital design and physical creation. Skilled in architecture software and web development, dedicated to transforming creative ideas into tangible results.">建築五專學生，透過數位設計與實體創作，探索空間與科技的交融。擅長使用建築設計軟體和前端開發技術，致力於將創意思想轉化為具體成果。</p>
+            <div class="skill-container">
+                <div class="skill-item">
+                    <div class="skill-info"><span data-zh="Rhino 建模" data-en="Rhino 3D">Rhino 建模</span><span>85%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%;"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span data-zh="Grasshopper 參數化設計" data-en="Grasshopper">Grasshopper 參數化設計</span><span>75%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%;"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span data-zh="HTML / CSS / JavaScript" data-en="HTML / CSS / JavaScript">HTML / CSS / JavaScript</span><span>80%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%;"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span data-zh="UI / UX 設計" data-en="UI / UX Design">UI / UX 設計</span><span>70%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%;"></div></div>
                 </div>
             </div>
         </div>
-    </header>
-
-    <section id="experience">
-        <h2 class="reveal" data-zh="經歷 Experience" data-en="Experience">經歷 Experience</h2>
-        <div class="timeline-list" id="timeline-list"></div>
-    </section>
-
-    <section id="portfolio">
-        <h2 class="reveal" data-zh="作品集 Portfolio" data-en="Portfolio">作品集 Portfolio</h2>
-        <div class="gallery" id="portfolio-gallery"></div>
-    </section>
-
-    <section id="certs">
-        <h2 class="reveal" data-zh="證照與證書 Certificates" data-en="Certificates">證照與證書 Certificates</h2>
-        <div class="gallery" id="certs-gallery"></div>
-    </section>
-
-    <section id="contact">
-        <h2 class="reveal" data-zh="聯絡 Contact" data-en="Contact">聯絡 Contact</h2>
-        <div class="contact-content reveal">
-            <div class="contact-row">
-                <span class="contact-label">Email: </span>
-                <span class="email-copy hover-trigger" onclick="copyEmail()">
-                    hofong159@gmail.com
-                    <span class="tooltip" id="copyTooltip">Copied!</span>
-                </span>
-            </div>
-            <div class="contact-row">
-                <a href="https://www.instagram.com/hotpo_t_/" target="_blank" class="ig-btn hover-trigger">
-                    <i class="fab fa-instagram"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="footer-overlay"></div>
-        <div class="footer-content">
-            <div class="draft-text" data-zh="新想法產出中..." data-en="NEW IDEAS LOADING...">新想法產出中...</div>
-            <p>&copy; 2026 廖和風 | Digital Architect</p>
-        </div>
-    </footer>
-
-    <div class="personal-logo hover-trigger">
-        <img src="個人標誌.jpg" alt="Logo">
     </div>
+</section>
 
-    <div id="portfolio-detail">
-        <div class="portfolio-detail-box">
-            <span id="close-portfolio-detail" onclick="closePortfolioDetail()">&times;</span>
-            <div id="portfolio-detail-title" class="portfolio-detail-title"></div>
-            <div id="portfolio-detail-media" class="portfolio-detail-media"></div>
-            <div id="portfolio-detail-description" class="portfolio-detail-description"></div>
+<section id="experience">
+    <h2 data-zh="經歷與獲獎" data-en="Experience & Awards">經歷與獲獎</h2>
+    <div class="timeline-list" id="timeline-list"></div>
+</section>
+
+<section id="portfolio">
+    <h2 data-zh="作品集" data-en="Portfolio">作品集</h2>
+    <div class="gallery" id="portfolio-gallery"></div>
+</section>
+
+<section id="certifications">
+    <h2 data-zh="證照與認證" data-en="Certifications">證照與認證</h2>
+    <div class="gallery" id="certs-gallery"></div>
+</section>
+
+<section id="contact">
+    <h2 data-zh="聯繫方式" data-en="Contact">聯繫方式</h2>
+    <div style="text-align: center; font-size: 1.1rem; color: var(--text-sub);">
+        <p data-zh="歡迎通過以下方式與我聯繫" data-en="Feel free to reach out">歡迎通過以下方式與我聯繫</p>
+        <p style="margin-top: 20px;"><a href="mailto:example@email.com" style="color: var(--accent-color); text-decoration: none; border-bottom: 1px dotted var(--accent-color);">example@email.com</a></p>
+        <p style="margin-top: 10px;"><a href="tel:+1234567890" style="color: var(--accent-color); text-decoration: none; border-bottom: 1px dotted var(--accent-color);">+1-234-567-890</a></p>
+        <div style="margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
+            <a href="https://github.com" target="_blank" style="color: var(--accent-color); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--accent-color)'">GitHub</a>
+            <a href="https://linkedin.com" target="_blank" style="color: var(--accent-color); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--accent-color)'">LinkedIn</a>
         </div>
     </div>
+</section>
 
-    <div id="lightbox">
-        <span id="close-lightbox" onclick="closeLightbox()">&times;</span>
-        <button class="lightbox-nav lightbox-prev" onclick="changeLightboxImage(-1)">&#10094;</button>
-        <img id="lightbox-img" src="">
-        <button class="lightbox-nav lightbox-next" onclick="changeLightboxImage(1)">&#10095;</button>
+<div id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <div class="lightbox-nav">
+        <button class="lightbox-btn" onclick="changeLightboxImage(-1)">❮</button>
+        <button class="lightbox-btn" onclick="changeLightboxImage(1)">❯</button>
     </div>
+    <img id="lightbox-img" src="" alt="Enlarged image">
+</div>
 
-    <script>
-        // --- 1. 滑鼠游標與光效 ---
-        const cursor = document.getElementById('cursor');
-        const body = document.body;
+<div id="portfolio-detail" class="portfolio-detail">
+    <div class="portfolio-modal">
+        <button class="modal-close" onclick="closePortfolioDetail()">✕</button>
+        <h2 id="portfolio-modal-title"></h2>
+        <p id="portfolio-modal-description"></p>
+    </div>
+</div>
+
+<script>
+    let isEnglish = false;
+    let lightboxImages = [];
+    let currentLightboxIndex = 0;
+
+    // --- 1. 滑鼠游標和聚焦效果 ---
+    const cursor = document.getElementById('cursor');
+    const spotlight = document.getElementById('spotlight');
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+        spotlight.style.setProperty('--x', e.clientX + 'px');
+        spotlight.style.setProperty('--y', e.clientY + 'px');
+    });
+
+    // --- 2. 打字機效果 ---
+    const texts = ["Digital Architect", "建築 × 設計 × 科技", "創新 / Innovation"];
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    function typewriter() {
+        const element = document.getElementById('typewriter-text');
+        const text = isEnglish ? texts[textIndex] : texts[textIndex];
+        if (textIndex === 0) text = isEnglish ? "Digital Architect" : "Digital Architect";
+        if (textIndex === 1) text = isEnglish ? "Design × Architecture × Tech" : "建築 × 設計 × 科技";
+        if (textIndex === 2) text = isEnglish ? "Innovation" : "創新";
         
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            body.style.setProperty('--x', e.clientX + 'px');
-            body.style.setProperty('--y', e.clientY + 'px');
+        if (!isDeleting && charIndex < text.length) {
+            element.textContent += text.charAt(charIndex);
+            charIndex++;
+            setTimeout(typewriter, 100);
+        } else if (isDeleting && charIndex > 0) {
+            element.textContent = text.substring(0, charIndex - 1);
+            charIndex--;
+            setTimeout(typewriter, 50);
+        } else if (!isDeleting && charIndex === text.length) {
+            isDeleting = true;
+            setTimeout(typewriter, 2000);
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            textIndex = (textIndex + 1) % texts.length;
+            setTimeout(typewriter, 500);
+        }
+    }
+    typewriter();
+
+    // --- 3. 進度條動畫 ---
+    function animateProgressBars() {
+        const bars = document.querySelectorAll('.progress-bar-fill');
+        const percentages = [85, 75, 80, 70];
+        bars.forEach((bar, i) => {
+            bar.style.width = percentages[i] + '%';
         });
+    }
 
-        function bindHoverTriggers() {
-            document.querySelectorAll('.hover-trigger').forEach(el => {
-                if (el.dataset.hoverBound) return;
-                el.dataset.hoverBound = "1";
-                el.addEventListener('mouseenter', () => body.classList.add('hovered'));
-                el.addEventListener('mouseleave', () => body.classList.remove('hovered'));
-            });
-        }
-        bindHoverTriggers();
-
-        // --- 2. 視差滾動 ---
-        window.addEventListener('scroll', () => {
-            const scrolled = window.scrollY;
-            document.querySelector('.hero-section').style.backgroundPositionY = `${scrolled * 0.5}px`;
-        });
-
-        // --- 3. 打字機 ---
-        const textsZh = ["I am an Architect.", "I am a Programmer.", "我是廖和風。"];
-        const textsEn = ["I am an Architect.", "I am a Programmer.", "I am Liao Hofong."];
-        let texts = textsZh;
-        let count = 0; let index = 0;
-        let currentText = ""; let letter = ""; let typingTimeout;
-
-        function type() {
-            if (count === texts.length) count = 0;
-            currentText = texts[count];
-            letter = currentText.slice(0, ++index);
-            document.getElementById('typewriter').textContent = letter;
-            if (letter.length === currentText.length) {
-                count++; index = 0; typingTimeout = setTimeout(type, 2000);
-            } else {
-                typingTimeout = setTimeout(type, 100);
-            }
-        }
-        type();
-
-        // --- 4. 語言切換 ---
-        let isEnglish = false;
-        function toggleLang() {
-            isEnglish = !isEnglish;
-            document.querySelectorAll('[data-zh]').forEach(el => {
-                el.textContent = isEnglish ? el.getAttribute('data-en') : el.getAttribute('data-zh');
-            });
-            clearTimeout(typingTimeout);
-            texts = isEnglish ? textsEn : textsZh;
-            count = 0; index = 0; type();
-        }
-
-        // --- 5. 亮暗/黑洞模式 ---
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        let clicks = 0;
-        function blackHoleTrigger() {
-            clicks++;
-            if (clicks === 3) {
-                document.body.style.filter = "invert(1)";
-                setTimeout(() => { document.body.style.filter = "none"; clicks = 0; }, 2000);
-            }
-        }
-
-        // --- 6. 複製 Email ---
-        function copyEmail() {
-            navigator.clipboard.writeText("hofong159@gmail.com");
-            const t = document.getElementById("copyTooltip");
-            t.classList.add("show");
-            setTimeout(() => t.classList.remove("show"), 2000);
-        }
-
-        // --- 7. Console 彩蛋 ---
-        console.log("%c歡迎來到廖和風的數位空間。", "color:#e67e22;font-size:20px;background:#111;padding:10px;border-radius:5px;");
-
-        // --- 8. 捲動 Reveal ---
-        function checkReveals() {
-            document.querySelectorAll('.reveal').forEach(el => {
-                if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active');
-            });
-        }
-        window.addEventListener('scroll', checkReveals);
-
-        // --- 9. 卡片翻頁 ---
-        function moveSlide(btn, dir) {
-            event.stopPropagation();
-            let container = btn.parentElement;
-            let imgs = container.getElementsByClassName('gallery-img');
-            let dots = container.querySelectorAll('.dot');
-            let curr = -1;
-            for(let i=0; i<imgs.length; i++) if(imgs[i].classList.contains('active')) curr = i;
-            let next = curr + dir;
-            if(next >= imgs.length) next = 0;
-            if(next < 0) next = imgs.length - 1;
-            
-            imgs[curr].classList.remove('active');
-            imgs[next].classList.add('active');
-            if(dots.length) {
-                dots[curr].classList.remove('active');
-                dots[next].classList.add('active');
-            }
-        }
-
-        // --- 10. 作品詳細視窗（作品與說明同一個懸浮視窗） ---
-        function openPortfolioDetail(card) {
-            const title = isEnglish ? (card.getAttribute('data-title-en') || card.getAttribute('data-title')) : card.getAttribute('data-title');
-            const description = isEnglish ? (card.getAttribute('data-description-en') || card.getAttribute('data-description') || '') : (card.getAttribute('data-description') || '');
-
-            document.getElementById('portfolio-detail-title').textContent = title || '';
-            document.getElementById('portfolio-detail-description').textContent = description;
-
-            // 把原作品的圖片／PDF放進同一個詳細視窗，不另外開只有文字的視窗。
-            const mediaTarget = document.getElementById('portfolio-detail-media');
-            mediaTarget.innerHTML = '';
-            const originalMedia = card.querySelector('.carousel-container');
-            if (originalMedia) {
-                const mediaClone = originalMedia.cloneNode(true);
-                // 詳細視窗內保留照片左右箭頭與圓點，讓 moveSlide() 繼續控制同一組圖片。
-                mediaClone.querySelectorAll('.gallery-img').forEach(img => {
-                    img.removeAttribute('onclick');
-                    img.style.cursor = 'default';
-                });
-                mediaClone.querySelectorAll('.card-btn').forEach(btn => {
-                    btn.style.opacity = '1';
-                    btn.style.cursor = 'pointer';
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        moveSlide(this, this.classList.contains('next-card') ? 1 : -1);
-                    };
-                });
-                const pdfFrame = mediaClone.querySelector('iframe');
-                if (pdfFrame) {
-                    pdfFrame.style.pointerEvents = 'auto';
-                    pdfFrame.setAttribute('scrolling', 'yes');
+    // --- 4. Scroll Reveal (出現動畫) ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                if (entry.target.querySelector('.progress-bar-fill')?.parentElement) {
+                    animateProgressBars();
                 }
-                mediaTarget.appendChild(mediaClone);
             }
-
-            const detail = document.getElementById('portfolio-detail');
-            detail.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => detail.classList.add('show'), 10);
-        }
-        function closePortfolioDetail() {
-            const detail = document.getElementById('portfolio-detail');
-            detail.classList.remove('show');
-            document.body.style.overflow = '';
-            setTimeout(() => { detail.style.display = 'none'; }, 300);
-        }
-        document.getElementById('portfolio-detail').addEventListener('click', (e) => {
-            if (e.target.id === 'portfolio-detail') closePortfolioDetail();
         });
+    }, { threshold: 0.1 });
 
-        // --- 10. Lightbox 邏輯 ---
-        let lightboxImages = [];
-        let lightboxIndex = 0;
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        function openLightboxGroup(imgElement) {
-            const container = imgElement.closest('.carousel-container');
-            const allImages = container.querySelectorAll('.gallery-img');
-            lightboxImages = Array.from(allImages).map(img => img.src);
-            lightboxIndex = lightboxImages.indexOf(imgElement.src);
-            updateLightbox();
-            document.getElementById("lightbox").style.display = "flex";
-            setTimeout(() => { document.getElementById("lightbox").classList.add('show'); }, 10);
-        }
-
-        function updateLightbox() {
-            const img = document.getElementById("lightbox-img");
-            const prevBtn = document.querySelector('.lightbox-prev');
-            const nextBtn = document.querySelector('.lightbox-next');
-            img.src = lightboxImages[lightboxIndex];
-            if (lightboxImages.length <= 1) {
-                prevBtn.style.display = 'none'; nextBtn.style.display = 'none';
-            } else {
-                prevBtn.style.display = 'block'; nextBtn.style.display = 'block';
-            }
-        }
-
-        function changeLightboxImage(dir) {
-            if(event) event.stopPropagation();
-            lightboxIndex += dir;
-            if (lightboxIndex >= lightboxImages.length) lightboxIndex = 0;
-            if (lightboxIndex < 0) lightboxIndex = lightboxImages.length - 1;
-            updateLightbox();
-        }
-
-        function closeLightbox() {
-            const lb = document.getElementById("lightbox");
-            lb.classList.remove('show');
-            setTimeout(() => { lb.style.display = "none"; }, 300);
-        }
-
-        document.getElementById("lightbox").addEventListener("click", (e) => {
-            if (e.target.id === "lightbox") closeLightbox();
+    // --- 5. 語言切換 ---
+    function toggleLanguage() {
+        isEnglish = !isEnglish;
+        document.querySelectorAll('[data-zh]').forEach(el => {
+            el.textContent = isEnglish ? el.getAttribute('data-en') : el.getAttribute('data-zh');
         });
+    }
+
+    // --- 6. Hover 觸發器 ---
+    function bindHoverTriggers() {
+        document.querySelectorAll('.hover-trigger').forEach(el => {
+            el.addEventListener('mouseenter', () => spotlight.style.opacity = '0.2');
+            el.addEventListener('mouseleave', () => spotlight.style.opacity = '0');
+        });
+    }
+    bindHoverTriggers();
+
+    // --- 7. 作品集卡片翻頁 ---
+    function moveSlide(btn, direction) {
+        const container = btn.closest('.carousel-container');
+        const imgs = container.querySelectorAll('.gallery-img');
+        const dots = container.querySelectorAll('.dot');
         
-        // 鍵盤支援 Lightbox
-        document.addEventListener('keydown', (e) => {
-            if (document.getElementById("lightbox").classList.contains('show')) {
-                if (e.key === "ArrowLeft") changeLightboxImage(-1);
-                if (e.key === "ArrowRight") changeLightboxImage(1);
-                if (e.key === "Escape") { closeLightbox(); closePortfolioDetail(); }
-            }
+        const current = Array.from(imgs).findIndex(img => img.classList.contains('active'));
+        const next = (current + direction + imgs.length) % imgs.length;
+        
+        imgs[current].classList.remove('active');
+        imgs[next].classList.add('active');
+        dots[current].classList.remove('active');
+        dots[next].classList.add('active');
+    }
+
+    // --- 8. Lightbox (全螢幕檢視) ---
+    function openLightboxGroup(imgElement) {
+        const container = imgElement.closest('.carousel-container');
+        lightboxImages = Array.from(container.querySelectorAll('.gallery-img')).map(img => img.src);
+        currentLightboxIndex = lightboxImages.indexOf(imgElement.src);
+        showLightbox();
+    }
+
+    function showLightbox() {
+        const lightbox = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-img');
+        img.src = lightboxImages[currentLightboxIndex];
+        lightbox.classList.add('show');
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('show');
+    }
+
+    function changeLightboxImage(direction) {
+        currentLightboxIndex = (currentLightboxIndex + direction + lightboxImages.length) % lightboxImages.length;
+        showLightbox();
+    }
+
+    // 鍵盤支援 Lightbox
+    document.addEventListener('keydown', (e) => {
+        if (document.getElementById("lightbox").classList.contains('show')) {
+            if (e.key === "ArrowLeft") changeLightboxImage(-1);
+            if (e.key === "ArrowRight") changeLightboxImage(1);
+            if (e.key === "Escape") { closeLightbox(); closePortfolioDetail(); }
+        }
+    });
+
+    // --- 9. Portfolio Detail Modal (作品說明) ---
+    function openPortfolioDetail(cardElement) {
+        const title = cardElement.getAttribute('data-title') || cardElement.getAttribute('data-title-en');
+        const titleEn = cardElement.getAttribute('data-title-en');
+        const description = cardElement.getAttribute('data-description') || '';
+        const descriptionEn = cardElement.getAttribute('data-description-en');
+        
+        document.getElementById('portfolio-modal-title').textContent = isEnglish ? titleEn : title;
+        document.getElementById('portfolio-modal-description').textContent = isEnglish ? descriptionEn : description;
+        
+        document.getElementById('portfolio-detail').classList.add('show');
+    }
+
+    function closePortfolioDetail() {
+        document.getElementById('portfolio-detail').classList.remove('show');
+    }
+
+    document.getElementById('portfolio-detail').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('portfolio-detail')) closePortfolioDetail();
+    });
+
+    // --- 10. Firebase 動態內容載入 ---
+    function esc(s) {
+        return (s || "").toString()
+            .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function applyLangToNew(container) {
+        container.querySelectorAll('[data-zh]').forEach(el => {
+            el.textContent = isEnglish ? el.getAttribute('data-en') : el.getAttribute('data-zh');
         });
+    }
 
-        // --- 11. Firebase 動態內容載入 ---
-        function esc(s) {
-            return (s || "").toString()
-                .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    function renderExperience(items) {
+        const wrap = document.getElementById('timeline-list');
+        wrap.innerHTML = items.map(it => `
+            <div class="timeline-item reveal">
+                <span class="timeline-date">${esc(it.date)}</span>
+                <div class="timeline-title" data-zh="${esc(it.title_zh)}" data-en="${esc(it.title_en || it.title_zh)}">${esc(it.title_zh)}</div>
+                ${it.content_zh ? `<div class="timeline-content" data-zh="${esc(it.content_zh)}" data-en="${esc(it.content_en || it.content_zh)}">${esc(it.content_zh)}</div>` : ""}
+                ${it.link ? `<a href="${esc(it.link)}" target="_blank" class="timeline-link hover-trigger" data-zh="${esc(it.link_label_zh || '查看詳細')}" data-en="${esc(it.link_label_en || 'Details')}">${esc(it.link_label_zh || '查看詳細')}</a>` : ""}
+            </div>
+        `).join("");
+        applyLangToNew(wrap);
+        bindHoverTriggers();
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
+
+    function galleryCardHTML(it) {
+        let mediaHtml = "";
+        if (it.pdf) {
+            mediaHtml = `<div class="carousel-container"><iframe src="${esc(it.pdf)}#view=FitH&toolbar=0&navpanes=0" width="100%" height="100%" style="border:none;"></iframe></div>`;
+        } else {
+            const imgs = (it.images && it.images.length ? it.images : []);
+            const imgsHtml = imgs.map((src, i) => `<img src="${esc(src)}" class="gallery-img${i === 0 ? ' active' : ''}" onclick="${it.certStyle ? 'event.stopPropagation(); openLightboxGroup(this)' : 'event.stopPropagation(); openPortfolioDetail(this.closest(\'.gallery-item\'))'}">`).join("");
+            const navHtml = imgs.length > 1 ? `
+                <button class="card-btn prev-card" onclick="moveSlide(this, -1)">&#10094;</button>
+                <button class="card-btn next-card" onclick="moveSlide(this, 1)">&#10095;</button>
+                <div class="carousel-dots">${imgs.map((_, i) => `<span class="dot${i === 0 ? ' active' : ''}"></span>`).join("")}</div>
+            ` : "";
+            mediaHtml = `<div class="carousel-container">${imgsHtml}${navHtml}</div>`;
         }
-
-        function applyLangToNew(container) {
-            container.querySelectorAll('[data-zh]').forEach(el => {
-                el.textContent = isEnglish ? el.getAttribute('data-en') : el.getAttribute('data-zh');
-            });
-        }
-
-        function renderExperience(items) {
-            const wrap = document.getElementById('timeline-list');
-            wrap.innerHTML = items.map(it => `
-                <div class="timeline-item reveal">
-                    <span class="timeline-date">${esc(it.date)}</span>
-                    <div class="timeline-title" data-zh="${esc(it.title_zh)}" data-en="${esc(it.title_en || it.title_zh)}">${esc(it.title_zh)}</div>
-                    ${it.content_zh ? `<div class="timeline-content" data-zh="${esc(it.content_zh)}" data-en="${esc(it.content_en || it.content_zh)}">${esc(it.content_zh)}</div>` : ""}
-                    ${it.link ? `<a href="${esc(it.link)}" target="_blank" class="timeline-link hover-trigger" data-zh="${esc(it.link_label_zh || '查看詳細')}" data-en="${esc(it.link_label_en || 'Details')}">${esc(it.link_label_zh || '查看詳細')}</a>` : ""}
+        const tagStyle = it.certStyle ? ` style="background: rgba(0,0,0,0); border: 1px solid var(--accent-color); color: var(--accent-color);"` : "";
+        const tagHtml = it.tag_zh ? `<div class="gallery-tag"${tagStyle} data-zh="${esc(it.tag_zh)}" data-en="${esc(it.tag_en || it.tag_zh)}">${esc(it.tag_zh)}</div>` : "";
+        const linkHtml = it.link && !it.pdf ? `<a href="${esc(it.link)}" target="_blank" class="tech-btn hover-trigger" onclick="event.stopPropagation()" style="display:inline-block;margin-top:10px;text-decoration:none;" data-zh="${esc(it.link_label_zh || '造訪網站')}" data-en="${esc(it.link_label_en || 'Visit')}">${esc(it.link_label_zh || '造訪網站')}</a>` : "";
+        const pdfLinkHtml = it.pdf ? `<a href="${esc(it.pdf)}#toolbar=0" target="_blank" class="tech-btn hover-trigger" onclick="event.stopPropagation()" style="display:inline-block;margin-top:10px;text-decoration:none;" data-zh="${esc(it.link_label_zh || '新分頁放大觀看')}" data-en="${esc(it.link_label_en || 'Open in new tab')}">${esc(it.link_label_zh || '新分頁放大觀看')}</a>` : "";
+        const portfolioAttrs = !it.certStyle ? ` onclick="openPortfolioDetail(this)" data-title="${esc(it.title_zh)}" data-title-en="${esc(it.title_en || it.title_zh)}" data-description="${esc(it.description_zh || '')}" data-description-en="${esc(it.description_en || it.description_zh || '')}"` : '';
+        return `
+            <div class="gallery-item reveal hover-trigger${!it.certStyle ? ' portfolio-card' : ''}"${portfolioAttrs}${it.pdf ? ' oncontextmenu="return false;"' : ''}>
+                ${mediaHtml}
+                <div class="gallery-info">
+                    <div class="gallery-title" data-zh="${esc(it.title_zh)}" data-en="${esc(it.title_en || it.title_zh)}">${esc(it.title_zh)}</div>
+                    ${tagHtml}
+                    ${linkHtml}
+                    ${pdfLinkHtml}
                 </div>
-            `).join("");
-            applyLangToNew(wrap);
-            bindHoverTriggers();
-            checkReveals();
-        }
+            </div>
+        `;
+    }
 
-        function galleryCardHTML(it) {
-            let mediaHtml = "";
-            if (it.pdf) {
-                mediaHtml = `<div class="carousel-container"><iframe src="${esc(it.pdf)}#view=FitH&toolbar=0&navpanes=0" width="100%" height="100%" style="border:none;"></iframe></div>`;
-            } else {
-                const imgs = (it.images && it.images.length ? it.images : []);
-                const imgsHtml = imgs.map((src, i) => `<img src="${esc(src)}" class="gallery-img${i === 0 ? ' active' : ''}" onclick="${it.certStyle ? 'event.stopPropagation(); openLightboxGroup(this)' : 'event.stopPropagation(); openPortfolioDetail(this.closest(\'.gallery-item\'))'}">`).join("");
-                const navHtml = imgs.length > 1 ? `
-                    <button class="card-btn prev-card" onclick="moveSlide(this, -1)">&#10094;</button>
-                    <button class="card-btn next-card" onclick="moveSlide(this, 1)">&#10095;</button>
-                    <div class="carousel-dots">${imgs.map((_, i) => `<span class="dot${i === 0 ? ' active' : ''}"></span>`).join("")}</div>
-                ` : "";
-                mediaHtml = `<div class="carousel-container">${imgsHtml}${navHtml}</div>`;
-            }
-            const noteHtml = it.note_zh ? `<div style="font-size:0.85rem;color:var(--text-sub);margin-top:5px;">${esc(it.note_zh)}</div>` : "";
-            const descriptionHtml = "";
-            const tagStyle = it.certStyle ? ` style="background: rgba(0,0,0,0); border: 1px solid var(--accent-color); color: var(--accent-color);"` : "";
-            const tagHtml = it.tag_zh ? `<div class="gallery-tag"${tagStyle} data-zh="${esc(it.tag_zh)}" data-en="${esc(it.tag_en || it.tag_zh)}">${esc(it.tag_zh)}</div>` : "";
-            const linkHtml = it.link && !it.pdf ? `<a href="${esc(it.link)}" target="_blank" class="tech-btn hover-trigger" onclick="event.stopPropagation()" style="display:inline-block;margin-top:10px;text-decoration:none;" data-zh="${esc(it.link_label_zh || '造訪網站')}" data-en="${esc(it.link_label_en || 'Visit')}">${esc(it.link_label_zh || '造訪網站')}</a>` : "";
-            const pdfLinkHtml = it.pdf ? `<a href="${esc(it.pdf)}#toolbar=0" target="_blank" class="tech-btn hover-trigger" onclick="event.stopPropagation()" style="display:inline-block;margin-top:10px;text-decoration:none;" data-zh="${esc(it.link_label_zh || '新分頁放大觀看')}" data-en="${esc(it.link_label_en || 'Open in new tab')}">${esc(it.link_label_zh || '新分頁放大觀看')}</a>` : "";
-            const portfolioAttrs = !it.certStyle ? ` onclick="openPortfolioDetail(this)" data-title="${esc(it.title_zh)}" data-title-en="${esc(it.title_en || it.title_zh)}" data-description="${esc(it.description_zh || '')}" data-description-en="${esc(it.description_en || it.description_zh || '')}"` : '';
-            return `
-                <div class="gallery-item reveal hover-trigger${!it.certStyle ? ' portfolio-card' : ''}"${portfolioAttrs}${it.pdf ? ' oncontextmenu="return false;"' : ''}>
-                    ${mediaHtml}
-                    <div class="gallery-info">
-                        <div class="gallery-title" data-zh="${esc(it.title_zh)}" data-en="${esc(it.title_en || it.title_zh)}">${esc(it.title_zh)}</div>
-                        ${noteHtml}
-                        ${descriptionHtml}
-                        ${tagHtml}
-                        ${linkHtml}
-                        ${pdfLinkHtml}
-                    </div>
-                </div>
-            `;
-        }
+    function renderPortfolio(items) {
+        const wrap = document.getElementById('portfolio-gallery');
+        wrap.innerHTML = items.map(it => galleryCardHTML(it)).join("");
+        applyLangToNew(wrap);
+        bindHoverTriggers();
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
 
-        function renderPortfolio(items) {
-            const wrap = document.getElementById('portfolio-gallery');
-            wrap.innerHTML = items.map(it => galleryCardHTML(it)).join("");
-            applyLangToNew(wrap);
-            bindHoverTriggers();
-            checkReveals();
-        }
+    function renderCerts(items) {
+        const wrap = document.getElementById('certs-gallery');
+        wrap.innerHTML = items.map(it => galleryCardHTML({ ...it, images: (it.images && it.images.length ? it.images : (it.image ? [it.image] : [])), certStyle: true })).join("");
+        applyLangToNew(wrap);
+        bindHoverTriggers();
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
 
-        function renderCerts(items) {
-            const wrap = document.getElementById('certs-gallery');
-            wrap.innerHTML = items.map(it => galleryCardHTML({ ...it, images: it.image ? [it.image] : [], certStyle: true })).join("");
-            applyLangToNew(wrap);
-            bindHoverTriggers();
-            checkReveals();
-        }
+    function loadAllContent() {
+        db.collection('experience').orderBy('order').get().then(snap => {
+            renderExperience(snap.docs.map(d => d.data()));
+        }).catch(err => console.error('讀取經歷失敗', err));
 
-        function loadAllContent() {
-            db.collection('experience').orderBy('order').get().then(snap => {
-                renderExperience(snap.docs.map(d => d.data()));
-            }).catch(err => console.error('讀取經歷失敗', err));
+        db.collection('portfolio').orderBy('order').get().then(snap => {
+            renderPortfolio(snap.docs.map(d => d.data()));
+        }).catch(err => console.error('讀取作品集失敗', err));
 
-            db.collection('portfolio').orderBy('order').get().then(snap => {
-                renderPortfolio(snap.docs.map(d => d.data()));
-            }).catch(err => console.error('讀取作品集失敗', err));
+        db.collection('certs').orderBy('order').get().then(snap => {
+            renderCerts(snap.docs.map(d => d.data()));
+        }).catch(err => console.error('讀取證照失敗', err));
+    }
 
-            db.collection('certs').orderBy('order').get().then(snap => {
-                renderCerts(snap.docs.map(d => d.data()));
-            }).catch(err => console.error('讀取證照失敗', err));
-        }
+    loadAllContent();
 
-        loadAllContent();
-    </script>
+    // 檢查 Reveal 元素
+    function checkReveals() {
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
+</script>
 </body>
 </html>
