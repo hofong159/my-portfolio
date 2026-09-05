@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>後台管理 | 廖和風</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
- 
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="firebase-init.js"></script>
- 
+
 <style>
     :root {
         --bg-base: #1a1c20;
@@ -24,33 +24,33 @@
     body { margin: 0; font-family: 'Rajdhani', sans-serif; background: var(--bg-base); color: var(--text-main); font-size: 16px; }
     h1, h2, h3 { font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
     a { color: var(--accent-color); }
- 
+
     #login-view { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
     .login-box { background: var(--bg-card); border: var(--border-tech); border-radius: 12px; padding: 40px; width: 320px; }
     .login-box h1 { font-size: 1.4rem; margin-bottom: 20px; text-align: center; }
- 
+
     input, select, textarea {
         width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 6px;
         border: 1px solid rgba(255,255,255,0.15); background: #17181b; color: var(--text-main); font-family: inherit; font-size: 1rem;
     }
     label { display: block; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 4px; }
- 
+
     button { cursor: pointer; border: none; border-radius: 6px; padding: 10px 18px; font-family: 'Orbitron', sans-serif; font-size: 0.85rem; background: var(--accent-color); color: #fff; transition: 0.2s; }
     button:hover { opacity: 0.85; }
     button.secondary { background: transparent; border: 1px solid var(--text-sub); color: var(--text-main); }
     button.danger { background: #b23a2f; }
- 
+
     #error-msg { color: #ff6b6b; font-size: 0.9rem; margin-bottom: 10px; min-height: 1.2em; }
- 
+
     #dashboard { display: none; max-width: 1000px; margin: 0 auto; padding: 30px 20px 100px; }
     .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px; }
     .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
     .tab-btn { background: transparent; border: 1px solid var(--text-sub); color: var(--text-sub); }
     .tab-btn.active { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
- 
+
     .panel { display: none; }
     .panel.active { display: block; }
- 
+
     .card { background: var(--bg-card); border: var(--border-tech); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
     .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); gap: 10px; }
     .item-row:last-child { border-bottom: none; }
@@ -58,20 +58,20 @@
     .item-row .info .t { font-weight: 700; }
     .item-row .info .s { font-size: 0.85rem; color: var(--text-sub); }
     .item-actions { display: flex; gap: 8px; }
- 
+
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
     .form-grid .full { grid-column: 1 / -1; }
     @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
- 
+
     .thumbs { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
     .thumbs img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
- 
+
     #migrate-box { margin-top: 40px; padding: 16px; border: 1px dashed var(--text-sub); border-radius: 10px; font-size: 0.85rem; color: var(--text-sub); }
     #save-status { font-size: 0.85rem; color: var(--text-sub); margin-top: 8px; min-height: 1.2em; }
 </style>
 </head>
 <body>
- 
+
 <div id="login-view">
     <div class="login-box">
         <h1>後台登入</h1>
@@ -83,7 +83,7 @@
         <button style="width:100%" onclick="doLogin()">登入</button>
     </div>
 </div>
- 
+
 <div id="dashboard">
     <div class="topbar">
         <h1 style="margin:0;font-size:1.3rem;">網站後台管理</h1>
@@ -92,13 +92,13 @@
             <button class="secondary" onclick="doLogout()">登出</button>
         </div>
     </div>
- 
+
     <div class="tabs">
         <button class="tab-btn active" data-tab="experience" onclick="switchTab('experience')">經歷</button>
         <button class="tab-btn" data-tab="portfolio" onclick="switchTab('portfolio')">作品集</button>
         <button class="tab-btn" data-tab="certs" onclick="switchTab('certs')">證照</button>
     </div>
- 
+
     <!-- 經歷 -->
     <div class="panel active" id="panel-experience">
         <div class="card"><div id="list-experience"></div></div>
@@ -120,7 +120,7 @@
             <div id="exp-status" style="font-size:0.85rem;color:var(--text-sub);margin-top:8px;"></div>
         </div>
     </div>
- 
+
     <!-- 作品集 -->
     <div class="panel" id="panel-portfolio">
         <div class="card"><div id="list-portfolio"></div></div>
@@ -128,24 +128,36 @@
             <h3 id="pf-form-title">新增作品</h3>
             <input type="hidden" id="pf-id">
             <div class="form-grid">
-                <div><label>作品標題(中)</label><input id="pf-title-zh"></div>
-                <div><label>標題(英，可留空)</label><input id="pf-title-en"></div>
-                <div><label>類型</label><select id="pf-type" onchange="togglePfType()"><option value="image">圖片</option><option value="pdf">PDF</option></select></div>
+                <div><label>類型</label>
+                    <select id="pf-type" onchange="togglePfType()">
+                        <option value="image">圖片(可多張，多張會變輪播)</option>
+                        <option value="pdf">PDF 文件</option>
+                    </select>
+                </div>
                 <div><label>排序 (數字越小越前面)</label><input type="number" id="pf-order" value="0"></div>
-                <div id="pf-image-field"><label>圖片網址(逗號分隔多張)</label><input id="pf-images" placeholder="url1.jpg, url2.jpg"></div>
-                <div id="pf-pdf-field" style="display:none;"><label>PDF 網址</label><input id="pf-pdf" placeholder="https://..."></div>
+                <div><label>標題(中)</label><input id="pf-title-zh"></div>
+                <div><label>標題(英，可留空)</label><input id="pf-title-en"></div>
                 <div><label>標籤(可留空，例如「建築設計作品」)</label><input id="pf-tag-zh"></div>
                 <div><label>備註小字(可留空)</label><input id="pf-note-zh"></div>
-                <div class="full"><label>作品說明(可留空)</label><textarea id="pf-description-zh" rows="5" placeholder="在這裡輸入這項作品的作品說明、設計理念、概念等文字..."></textarea></div>
                 <div><label>外部連結網址(可留空，例如作品網站)</label><input id="pf-link" placeholder="https://..."></div>
                 <div><label>連結顯示文字(可留空)</label><input id="pf-link-label"></div>
+            </div>
+            <div id="pf-image-field">
+                <label>圖片檔名或網址(多張用逗號分隔，例如：案例1.jpg, 案例2.jpg)</label>
+                <input id="pf-images" placeholder="案例1.jpg, 案例2.jpg">
+                <div style="font-size:0.8rem;color:var(--text-sub);margin-top:-6px;margin-bottom:10px;">請先把圖片檔案上傳到 GitHub 專案裡(跟 index.html 同一層)，這裡只要填檔名就好，順序就是輪播順序。</div>
+            </div>
+            <div id="pf-pdf-field" style="display:none;">
+                <label>PDF 檔名或網址</label>
+                <input id="pf-pdf" placeholder="作品說明.pdf">
+                <div style="font-size:0.8rem;color:var(--text-sub);margin-top:-6px;margin-bottom:10px;">請先把 PDF 檔案上傳到 GitHub 專案裡，這裡填檔名就好。</div>
             </div>
             <button onclick="savePortfolio()">儲存</button>
             <button class="secondary" onclick="resetPfForm()">清空表單</button>
             <div id="pf-status" style="font-size:0.85rem;color:var(--text-sub);margin-top:8px;"></div>
         </div>
     </div>
- 
+
     <!-- 證照 -->
     <div class="panel" id="panel-certs">
         <div class="card"><div id="list-certs"></div></div>
@@ -153,162 +165,86 @@
             <h3 id="cert-form-title">新增證照</h3>
             <input type="hidden" id="cert-id">
             <div class="form-grid">
-                <div><label>證照標題(中)</label><input id="cert-title-zh"></div>
-                <div><label>標題(英，可留空)</label><input id="cert-title-en"></div>
                 <div><label>排序 (數字越小越前面)</label><input type="number" id="cert-order" value="0"></div>
-                <div class="full"><label>證照圖片網址(逗號分隔多張)</label><input id="cert-images" placeholder="cert1.jpg, cert2.jpg"></div>
-                <div><label>標籤(中)</label><input id="cert-tag-zh"></div>
+                <div><label>標題(中)</label><input id="cert-title-zh"></div>
+                <div><label>標題(英，可留空)</label><input id="cert-title-en"></div>
+                <div><label>標籤(可留空，例如發證單位)</label><input id="cert-tag-zh"></div>
             </div>
+            <label>圖片檔名或網址</label>
+            <input id="cert-image" placeholder="證照1.jpg">
+            <div style="font-size:0.8rem;color:var(--text-sub);margin-top:-6px;margin-bottom:10px;">請先把證照圖片上傳到 GitHub 專案裡，這裡填檔名就好。</div>
             <button onclick="saveCert()">儲存</button>
             <button class="secondary" onclick="resetCertForm()">清空表單</button>
             <div id="cert-status" style="font-size:0.85rem;color:var(--text-sub);margin-top:8px;"></div>
         </div>
     </div>
- 
+
     <div id="migrate-box">
-        <p>一次性匯入舊資料按鈕</p>
-        <button onclick="migrateOldData()">匯入預設資料</button>
-        <div id="migrate-status"></div>
+        <b>一次性匯入舊資料：</b>把原本寫死在網頁裡的經歷/作品集/證照內容匯入 Firestore。
+        只需要按一次；重複按會造成資料重複，如果不小心按兩次，用上面的清單手動刪除多的即可。
+        <div style="margin-top:10px;"><button class="secondary" onclick="migrateOldData()">匯入舊資料</button></div>
+        <div id="migrate-status" style="margin-top:8px;"></div>
     </div>
 </div>
- 
+
 <script>
-    let currentUser = null;
- 
-    // ---------- 認證與儀表板 ----------
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            currentUser = user;
-            document.getElementById('login-view').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            loadAllLists();
-        } else {
-            document.getElementById('login-view').style.display = 'flex';
-            document.getElementById('dashboard').style.display = 'none';
-        }
-    });
- 
+    // ---------- 登入 / 登出 ----------
     function doLogin() {
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
-        if (!email || !password) {
-            document.getElementById('error-msg').textContent = '請填寫帳號密碼';
-            return;
-        }
-        document.getElementById('error-msg').textContent = '';
-        firebase.auth().signInWithEmailAndPassword(email, password)
-            .catch(err => document.getElementById('error-msg').textContent = err.message);
+        document.getElementById('error-msg').textContent = "";
+        auth.signInWithEmailAndPassword(email, password).catch(err => {
+            document.getElementById('error-msg').textContent = "登入失敗：" + err.message;
+        });
     }
- 
-    function doLogout() {
-        firebase.auth().signOut();
+    function doLogout() { auth.signOut(); }
+
+    auth.onAuthStateChanged(user => {
+        document.getElementById('login-view').style.display = user ? 'none' : 'flex';
+        document.getElementById('dashboard').style.display = user ? 'block' : 'none';
+        if (user) loadAllLists();
+    });
+
+    // ---------- Tabs ----------
+    function switchTab(name) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+        document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
     }
- 
-    // ---------- 標籤頁面切換 ----------
-    function switchTab(tab) {
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('panel-' + tab).classList.add('active');
-        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-    }
- 
-    // ---------- 列表載入 ----------
-    function loadList(col) {
-        if (col === 'experience') {
-            db.collection('experience').orderBy('order').get().then(snap => {
-                const html = snap.docs.map(doc => {
-                    const d = doc.data();
-                    return `
-                        <div class="item-row">
-                            <div class="info">
-                                <div class="t">${d.title_zh}</div>
-                                <div class="s">${d.date} | 排序: ${d.order}</div>
-                            </div>
-                            <div class="item-actions">
-                                <button onclick="editExperience('${doc.id}')">編輯</button>
-                                <button class="danger" onclick="deleteItem('experience', '${doc.id}')">刪除</button>
-                            </div>
-                        </div>
-                    `;
-                }).join("");
-                document.getElementById('list-experience').innerHTML = html || '<p style="color: var(--text-sub);">暫無資料</p>';
-            });
-        } else if (col === 'portfolio') {
-            db.collection('portfolio').orderBy('order').get().then(snap => {
-                const html = snap.docs.map(doc => {
-                    const d = doc.data();
-                    const imgs = d.images && d.images.length ? `<div class="thumbs">${d.images.slice(0,3).map(src => `<img src="${src}">`).join("")}</div>` : "";
-                    return `
-                        <div class="item-row">
-                            <div class="info">
-                                <div class="t">${d.title_zh}</div>
-                                <div class="s">排序: ${d.order}</div>
-                                ${imgs}
-                            </div>
-                            <div class="item-actions">
-                                <button onclick="editPortfolio('${doc.id}')">編輯</button>
-                                <button class="danger" onclick="deleteItem('portfolio', '${doc.id}')">刪除</button>
-                            </div>
-                        </div>
-                    `;
-                }).join("");
-                document.getElementById('list-portfolio').innerHTML = html || '<p style="color: var(--text-sub);">暫無資料</p>';
-            });
-        } else if (col === 'certs') {
-            db.collection('certs').orderBy('order').get().then(snap => {
-                const html = snap.docs.map(doc => {
-                    const d = doc.data();
-                    const imgs = d.images && d.images.length ? `<div class="thumbs">${d.images.slice(0,3).map(src => `<img src="${src}">`).join("")}</div>` : (d.image ? `<div class="thumbs"><img src="${d.image}"></div>` : "");
-                    return `
-                        <div class="item-row">
-                            <div class="info">
-                                <div class="t">${d.title_zh}</div>
-                                <div class="s">排序: ${d.order}</div>
-                                ${imgs}
-                            </div>
-                            <div class="item-actions">
-                                <button onclick="editCert('${doc.id}')">編輯</button>
-                                <button class="danger" onclick="deleteItem('certs', '${doc.id}')">刪除</button>
-                            </div>
-                        </div>
-                    `;
-                }).join("");
-                document.getElementById('list-certs').innerHTML = html || '<p style="color: var(--text-sub);">暫無資料</p>';
-            });
-        }
-    }
- 
+
+    // ---------- 共用工具 ----------
     function loadAllLists() {
         loadList('experience');
         loadList('portfolio');
         loadList('certs');
     }
- 
-    function deleteItem(col, id) {
-        if (!confirm('確定要刪除嗎？')) return;
-        db.collection(col).doc(id).delete().then(() => {
-            loadList(col);
-        }).catch(err => alert('刪除失敗：' + err.message));
-    }
- 
-    // ---------- 經歷 ----------
-    function editExperience(id) {
-        db.collection('experience').doc(id).get().then(doc => {
-            const d = doc.data();
-            document.getElementById('exp-id').value = id;
-            document.getElementById('exp-form-title').textContent = '編輯經歷';
-            document.getElementById('exp-date').value = d.date || '';
-            document.getElementById('exp-order').value = d.order || 0;
-            document.getElementById('exp-title-zh').value = d.title_zh || '';
-            document.getElementById('exp-title-en').value = d.title_en || '';
-            document.getElementById('exp-content-zh').value = d.content_zh || '';
-            document.getElementById('exp-content-en').value = d.content_en || '';
-            document.getElementById('exp-link').value = d.link || '';
-            document.getElementById('exp-link-label').value = d.link_label_zh || '';
-            switchTab('experience');
+
+    function loadList(col) {
+        db.collection(col).orderBy('order').get().then(snap => {
+            const wrap = document.getElementById('list-' + col);
+            if (snap.empty) { wrap.innerHTML = '<div style="color:var(--text-sub);">目前沒有項目</div>'; return; }
+            wrap.innerHTML = snap.docs.map(doc => {
+                const it = doc.data();
+                const title = it.title_zh || it.date || '(無標題)';
+                const sub = col === 'experience' ? (it.date || '') : (it.tag_zh || '');
+                return `<div class="item-row">
+                    <div class="info"><div class="t">${escapeHtml(title)}</div><div class="s">${escapeHtml(sub)} · order: ${it.order}</div></div>
+                    <div class="item-actions">
+                        <button class="secondary" onclick="editItem('${col}','${doc.id}')">編輯</button>
+                        <button class="danger" onclick="deleteItem('${col}','${doc.id}')">刪除</button>
+                    </div>
+                </div>`;
+            }).join('');
         });
     }
- 
+
+    function escapeHtml(s) { return (s || '').toString().replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+    function deleteItem(col, id) {
+        if (!confirm('確定要刪除這個項目嗎？')) return;
+        db.collection(col).doc(id).delete().then(() => loadList(col));
+    }
+
+    // ---------- 經歷 ----------
     function resetExpForm() {
         document.getElementById('exp-id').value = '';
         document.getElementById('exp-form-title').textContent = '新增經歷';
@@ -316,22 +252,64 @@
         document.getElementById('exp-order').value = 0;
         document.getElementById('exp-status').textContent = '';
     }
- 
+
+    function editItem(col, id) {
+        db.collection(col).doc(id).get().then(doc => {
+            const it = doc.data();
+            if (col === 'experience') {
+                switchTab('experience');
+                document.getElementById('exp-id').value = id;
+                document.getElementById('exp-form-title').textContent = '編輯經歷';
+                document.getElementById('exp-date').value = it.date || '';
+                document.getElementById('exp-order').value = it.order || 0;
+                document.getElementById('exp-title-zh').value = it.title_zh || '';
+                document.getElementById('exp-title-en').value = it.title_en || '';
+                document.getElementById('exp-content-zh').value = it.content_zh || '';
+                document.getElementById('exp-content-en').value = it.content_en || '';
+                document.getElementById('exp-link').value = it.link || '';
+                document.getElementById('exp-link-label').value = it.link_label_zh || '';
+            } else if (col === 'portfolio') {
+                switchTab('portfolio');
+                document.getElementById('pf-id').value = id;
+                document.getElementById('pf-form-title').textContent = '編輯作品';
+                document.getElementById('pf-type').value = it.pdf ? 'pdf' : 'image';
+                togglePfType();
+                document.getElementById('pf-order').value = it.order || 0;
+                document.getElementById('pf-title-zh').value = it.title_zh || '';
+                document.getElementById('pf-title-en').value = it.title_en || '';
+                document.getElementById('pf-tag-zh').value = it.tag_zh || '';
+                document.getElementById('pf-note-zh').value = it.note_zh || '';
+                document.getElementById('pf-link').value = it.link || '';
+                document.getElementById('pf-link-label').value = it.link_label_zh || '';
+                document.getElementById('pf-images').value = (it.images || []).join(', ');
+                document.getElementById('pf-pdf').value = it.pdf || '';
+            } else if (col === 'certs') {
+                switchTab('certs');
+                document.getElementById('cert-id').value = id;
+                document.getElementById('cert-form-title').textContent = '編輯證照';
+                document.getElementById('cert-order').value = it.order || 0;
+                document.getElementById('cert-title-zh').value = it.title_zh || '';
+                document.getElementById('cert-title-en').value = it.title_en || '';
+                document.getElementById('cert-tag-zh').value = it.tag_zh || '';
+                document.getElementById('cert-image').value = it.image || '';
+            }
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        });
+    }
+
     function saveExperience() {
         const id = document.getElementById('exp-id').value;
-        const date = document.getElementById('exp-date').value.trim();
-        const titleZh = document.getElementById('exp-title-zh').value.trim();
-        if (!date || !titleZh) { document.getElementById('exp-status').textContent = '請至少填寫日期和標題(中)'; return; }
         const data = {
+            date: document.getElementById('exp-date').value.trim(),
             order: Number(document.getElementById('exp-order').value) || 0,
-            date: date,
-            title_zh: titleZh,
+            title_zh: document.getElementById('exp-title-zh').value.trim(),
             title_en: document.getElementById('exp-title-en').value.trim(),
             content_zh: document.getElementById('exp-content-zh').value.trim(),
             content_en: document.getElementById('exp-content-en').value.trim(),
             link: document.getElementById('exp-link').value.trim(),
             link_label_zh: document.getElementById('exp-link-label').value.trim()
         };
+        if (!data.title_zh) { document.getElementById('exp-status').textContent = '請至少填寫標題(中)'; return; }
         document.getElementById('exp-status').textContent = '儲存中...';
         const ref = id ? db.collection('experience').doc(id) : db.collection('experience').doc();
         ref.set(data).then(() => {
@@ -340,64 +318,42 @@
             loadList('experience');
         }).catch(err => document.getElementById('exp-status').textContent = '失敗：' + err.message);
     }
- 
+
     // ---------- 作品集 ----------
-    function editPortfolio(id) {
-        db.collection('portfolio').doc(id).get().then(doc => {
-            const d = doc.data();
-            document.getElementById('pf-id').value = id;
-            document.getElementById('pf-form-title').textContent = '編輯作品';
-            document.getElementById('pf-title-zh').value = d.title_zh || '';
-            document.getElementById('pf-title-en').value = d.title_en || '';
-            document.getElementById('pf-type').value = d.pdf ? 'pdf' : 'image';
-            togglePfType();
-            document.getElementById('pf-images').value = (d.images || []).join(', ');
-            document.getElementById('pf-pdf').value = d.pdf || '';
-            document.getElementById('pf-tag-zh').value = d.tag_zh || '';
-            document.getElementById('pf-note-zh').value = d.note_zh || '';
-            document.getElementById('pf-description-zh').value = d.description_zh || '';
-            document.getElementById('pf-link').value = d.link || '';
-            document.getElementById('pf-link-label').value = d.link_label_zh || '';
-            document.getElementById('pf-order').value = d.order || 0;
-            switchTab('portfolio');
-        });
-    }
- 
     function togglePfType() {
         const isPdf = document.getElementById('pf-type').value === 'pdf';
         document.getElementById('pf-image-field').style.display = isPdf ? 'none' : 'block';
         document.getElementById('pf-pdf-field').style.display = isPdf ? 'block' : 'none';
     }
- 
+
     function resetPfForm() {
         document.getElementById('pf-id').value = '';
         document.getElementById('pf-form-title').textContent = '新增作品';
         document.getElementById('pf-type').value = 'image';
         togglePfType();
-        ['pf-title-zh','pf-title-en','pf-tag-zh','pf-note-zh','pf-description-zh','pf-link','pf-link-label','pf-images','pf-pdf'].forEach(id => document.getElementById(id).value = '');
+        ['pf-title-zh','pf-title-en','pf-tag-zh','pf-note-zh','pf-link','pf-link-label','pf-images','pf-pdf'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('pf-order').value = 0;
         document.getElementById('pf-status').textContent = '';
     }
- 
+
     function savePortfolio() {
         const id = document.getElementById('pf-id').value;
         const isPdf = document.getElementById('pf-type').value === 'pdf';
         const titleZh = document.getElementById('pf-title-zh').value.trim();
         if (!titleZh) { document.getElementById('pf-status').textContent = '請至少填寫標題(中)'; return; }
- 
+
         const data = {
             order: Number(document.getElementById('pf-order').value) || 0,
             title_zh: titleZh,
             title_en: document.getElementById('pf-title-en').value.trim(),
             tag_zh: document.getElementById('pf-tag-zh').value.trim(),
             note_zh: document.getElementById('pf-note-zh').value.trim(),
-            description_zh: document.getElementById('pf-description-zh').value.trim(),
             link: document.getElementById('pf-link').value.trim(),
             link_label_zh: document.getElementById('pf-link-label').value.trim(),
             images: isPdf ? [] : document.getElementById('pf-images').value.split(',').map(s => s.trim()).filter(Boolean),
             pdf: isPdf ? document.getElementById('pf-pdf').value.trim() : ''
         };
- 
+
         document.getElementById('pf-status').textContent = '儲存中...';
         const ref = id ? db.collection('portfolio').doc(id) : db.collection('portfolio').doc();
         ref.set(data).then(() => {
@@ -406,30 +362,16 @@
             loadList('portfolio');
         }).catch(err => document.getElementById('pf-status').textContent = '失敗：' + err.message);
     }
- 
+
     // ---------- 證照 ----------
-    function editCert(id) {
-        db.collection('certs').doc(id).get().then(doc => {
-            const d = doc.data();
-            document.getElementById('cert-id').value = id;
-            document.getElementById('cert-form-title').textContent = '編輯證照';
-            document.getElementById('cert-title-zh').value = d.title_zh || '';
-            document.getElementById('cert-title-en').value = d.title_en || '';
-            document.getElementById('cert-images').value = (d.images || (d.image ? [d.image] : [])).join(', ');
-            document.getElementById('cert-tag-zh').value = d.tag_zh || '';
-            document.getElementById('cert-order').value = d.order || 0;
-            switchTab('certs');
-        });
-    }
- 
     function resetCertForm() {
         document.getElementById('cert-id').value = '';
         document.getElementById('cert-form-title').textContent = '新增證照';
-        ['cert-title-zh','cert-title-en','cert-tag-zh','cert-images'].forEach(id => document.getElementById(id).value = '');
+        ['cert-title-zh','cert-title-en','cert-tag-zh','cert-image'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('cert-order').value = 0;
         document.getElementById('cert-status').textContent = '';
     }
- 
+
     function saveCert() {
         const id = document.getElementById('cert-id').value;
         const titleZh = document.getElementById('cert-title-zh').value.trim();
@@ -439,7 +381,7 @@
             title_zh: titleZh,
             title_en: document.getElementById('cert-title-en').value.trim(),
             tag_zh: document.getElementById('cert-tag-zh').value.trim(),
-            images: document.getElementById('cert-images').value.split(',').map(s => s.trim()).filter(Boolean)
+            image: document.getElementById('cert-image').value.trim()
         };
         document.getElementById('cert-status').textContent = '儲存中...';
         const ref = id ? db.collection('certs').doc(id) : db.collection('certs').doc();
@@ -449,17 +391,17 @@
             loadList('certs');
         }).catch(err => document.getElementById('cert-status').textContent = '失敗：' + err.message);
     }
- 
+
     // ---------- 一次性匯入舊資料 ----------
     function migrateOldData() {
         if (!confirm('確定要匯入舊資料嗎？如果之前已經匯入過，會造成重複。')) return;
         document.getElementById('migrate-status').textContent = '匯入中...';
- 
+
         const experience = [
             { order: 1, date: "2026/01", title_zh: "於高雄四維國小STEAM X 台語沉浸式寒假木工營擔任助教", title_en: "Assistant at Sihwei Primary School STEAM Woodworking Camp" },
             { order: 2, date: "2025", title_zh: "專業設計人才認證 (程式語言C++ 第2版專業級)", title_en: "Professional Design Certification (C++ Level 2)" },
             { order: 3, date: "2024", title_zh: "奧斯卡音樂大賽 - 高中職組室內樂重奏 第二名", title_en: "Oscar Music Competition - 2nd Place" },
-            { order: 4, date: "2024", title_zh: "故事臺灣獎 - 異色島共筆手冊《叛逆與順從》", title_en: "Story Taiwan Award", link: "https://nmtheducation.nmth.gov.tw/award/content/20240911_%E5%8F%9B%E9%80%86%E8%88%87%E9%A0%84%E5%BE%9E", link_label_zh: "查看詳細" },
+            { order: 4, date: "2024", title_zh: "故事臺灣獎 - 異色島共筆手冊《叛逆與順從》", title_en: "Story Taiwan Award", link: "https://nmtheducation.nmth.gov.tw/award/content/20240911_%E5%8F%9B%E9%80%86%E8%88%87%E9%A0%86%E5%BE%9E", link_label_zh: "查看詳細" },
             { order: 5, date: "2022", title_zh: "高雄工業散步：騎'機'之旅 - 擔任公民研究員", title_en: "Kaohsiung Industrial Walk Research", link: "https://www.youtube.com/watch?v=X9n--q8ekKk", link_label_zh: "YouTube" },
             { order: 6, date: "2022", title_zh: "木育玩具創作競賽 - 國高中職組 第三名", title_en: "Wooden Toy Competition - 3rd Place", content_zh: "作品：《合揍手足球》", content_en: "Work: Table Football" },
             { order: 7, date: "2020", title_zh: "Microsoft PowerPoint 專業級證照考取", title_en: "PowerPoint Certification" },
@@ -467,7 +409,7 @@
             { order: 9, date: "2019", title_zh: "木育玩具創作競賽 - 國中小組 第二名", title_en: "Wooden Toy Competition - 2nd Place", content_zh: "作品：《怪手就是挖土機》", link: "https://www.facebook.com/twtoylibrary/photos/%E7%AC%AC%E4%BA%8C%E5%90%8D-%E5%9C%8B%E4%B8%AD%E5%B0%8F%E7%B5%84%E4%BD%9C%E5%93%81%E5%90%8D%E7%A8%B1%E6%80%AA%E6%89%8B%E5%B0%B1%E6%98%AF%E6%8C%96%E5%9C%9F%E6%A9%9F%E6%89%80%E5%B1%AC%E5%96%AE%E4%BD%8D%E5%B1%8F%E6%9D%B1%E5%A4%A7%E5%AD%B8%E9%99%84%E8%A8%AD%E5%AF%A6%E9%A9%97%E5%B0%8F%E5%AD%B8%E6%8C%87%E5%B0%8E%E8%80%81%E5%B8%AB%E5%BB%96%E4%BF%8A%E5%BD%A5%E4%BD%9C%E8%80%85%E5%9C%98%E9%9A%8A%E5%BB%96%E5%92%8C%E9%A2%A8%E7%8E%A9%E5%85%B7%E4%BB%8B%E7%B4%B9%E9%81%A9%E5%90%8857%E6%AD%B2%E5%8F%AF1%E4%BA%BA%E7%8E%A9-%E7%8E%A9%E6%B3%95-httpsyoutubef9oh/2626950557384959/", link_label_zh: "Link" },
             { order: 10, date: "2019", title_zh: "木的彈性2 - 實驗坐具展", content_zh: "作品：《填滿》", link: "https://woood.tw/exhibitions/2019-1221/5-2/", link_label_zh: "Link" }
         ];
- 
+
         const portfolio = [
             { order: 1, title_zh: "CSU-Safety 合作建置網站", title_en: "CSU-Safety Website", note_zh: "(非學校官方網站，為學生練習用)", images: ["csu-safety.jpg"], link: "https://hofong159.github.io/csu-safety/", link_label_zh: "造訪網站" },
             { order: 2, title_zh: "花藝設計師工作室 - 手繪圖", title_en: "Florist Studio (Sketch)", images: ["案例1.jpg"] },
@@ -482,15 +424,15 @@
             { order: 11, title_zh: "動手動腳手足球", title_en: "Football", tag_zh: "木育玩具創作競賽", images: ["動手動腳手足球.jpg"] },
             { order: 12, title_zh: "合揍手足球", title_en: "Table Football", tag_zh: "木育玩具創作競賽", images: ["合揍手足球.jpg"] }
         ];
- 
+
         const certs = [
-            { order: 1, title_zh: "Microsoft PowerPoint 專業級證照", title_en: "Microsoft PowerPoint Certification", tag_zh: "Microsoft Office Specialist", images: ["證照1.jpg"] },
-            { order: 2, title_zh: "程式語言C++ 專業級", title_en: "C++ Professional Certification", tag_zh: "TQC+ 專業設計人才認證", images: ["證照2.jpg"] },
-            { order: 3, title_zh: "木工營講師/助教 感謝狀", title_en: "Woodworking Camp Assistant Certificate", tag_zh: "高雄四維國小 STEAM X 台語沉浸式寒假木工營", images: ["證書1.jpg"] }
+            { order: 1, title_zh: "Microsoft PowerPoint 專業級證照", title_en: "Microsoft PowerPoint Certification", tag_zh: "Microsoft Office Specialist", image: "證照1.jpg" },
+            { order: 2, title_zh: "程式語言C++ 專業級", title_en: "C++ Professional Certification", tag_zh: "TQC+ 專業設計人才認證", image: "證照2.jpg" },
+            { order: 3, title_zh: "木工營講師/助教 感謝狀", title_en: "Woodworking Camp Assistant Certificate", tag_zh: "高雄四維國小 STEAM X 台語沉浸式寒假木工營", image: "證書1.jpg" }
         ];
- 
+
         const batchWrite = (col, arr) => Promise.all(arr.map(item => db.collection(col).add(item)));
- 
+
         Promise.all([
             batchWrite('experience', experience),
             batchWrite('portfolio', portfolio),
